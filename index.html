@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#08111f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Void Survivors</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <section id="start-screen" class="screen active">
+      <div class="start-copy">
+        <div class="eyebrow"><span class="live-dot"></span> DEEP-SPACE SURVIVAL // SECTOR 07</div>
+        <h1>VOID<br><em>SURVIVORS</em></h1>
+        <p class="lede">Drift through the swarm. Build a weapon system. Outlast the dark.</p>
+        <div id="selected-ship-preview" class="selected-ship-preview"></div>
+        <button id="choose-ship-btn" class="secondary-btn"><span>Choose ship</span><b>↗</b></button>
+        <button id="launch-btn" class="primary-btn"><span>Launch run</span><b>↗</b></button>
+        <button id="leaderboard-btn" class="secondary-btn"><span>Top 5 leaderboard</span><b>↗</b></button>
+        <button id="settings-btn" class="text-btn home-settings">Settings</button>
+        <div class="tip"><span>◈</span> Touch-drag to pilot. Weapons fire automatically.</div>
+      </div>
+      <div class="start-art" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="hero-ship"><i></i><b></b></div>
+        <div class="hero-star star-a"></div><div class="hero-star star-b"></div><div class="hero-star star-c"></div>
+        <div class="art-label"><span>RUN PROFILE</span><strong>01 / 04</strong></div>
+      </div>
+    </section>
+
+    <section id="game-screen" class="screen">
+      <canvas id="game-canvas"></canvas>
+      <div class="hud">
+        <div class="hud-top">
+          <div class="brand-mark">V<span>/</span>S</div>
+          <div class="run-clock"><small>SECTOR TIME</small><strong id="time-display">00:00</strong></div>
+          <div class="hud-right"><div class="stat-chip"><span class="chip-icon">✦</span><b id="kill-display">0</b><small>kills</small></div><button id="pause-btn" class="icon-btn" aria-label="Pause">Ⅱ</button></div>
+        </div>
+        <div class="bars">
+            <div class="bar-row"><span class="bar-label">HULL</span><div class="bar hull"><i id="hull-bar"></i></div><span id="hull-value">100 / 100</span><div id="shield-status" class="shield-status empty"><span class="shield-status-icon">◉</span><span id="shield-value">NO SHIELD</span></div></div>
+          <div class="bar-row"><span class="bar-label xp-label">XP</span><div class="bar xp"><i id="xp-bar"></i></div><span id="level-display">LVL 1</span></div>
+        </div>
+        <div class="loadout" id="loadout">
+          <section class="loadout-group weapons-group"><h3>Weapons</h3><div class="loadout-items" id="weapon-loadout"></div></section>
+          <section class="loadout-group powerups-group"><h3>Powerups</h3><div class="loadout-items" id="powerup-loadout"></div></section>
+        </div>
+        <div class="wave-marker"><span class="pulse"></span><span id="wave-display">WAVE 01</span></div>
+      </div>
+    </section>
+
+    <div id="level-modal" class="modal hidden">
+      <div class="modal-inner">
+        <div class="modal-heading"><div><div class="eyebrow"><span class="live-dot"></span> SYSTEM UPGRADE</div><h2>Choose your edge</h2></div><div class="level-badge">LVL <strong id="modal-level">2</strong></div></div>
+        <p class="modal-sub">Time freezes while you tune the ship.</p>
+        <div class="upgrade-grid" id="upgrade-grid"></div>
+      </div>
+    </div>
+
+    <div id="pause-modal" class="modal hidden compact-modal"><div class="modal-inner pause-inner"><div class="eyebrow"><span class="live-dot"></span> FLIGHT PAUSED</div><h2>Hold position.</h2><p class="modal-sub">The swarm is waiting beyond the glass.</p><label class="god-mode-toggle"><input id="god-mode-toggle" type="checkbox"><span class="toggle-track"><i></i></span><span><strong>God Mode</strong><small>Ignore all incoming damage</small></span></label><button id="resume-btn" class="primary-btn"><span>Resume flight</span><b>▶</b></button><button id="quit-btn" class="text-btn">Abort run</button></div></div>
+
+    <div id="gameover-modal" class="modal hidden"><div class="modal-inner result-inner"><div class="result-kicker">SIGNAL LOST</div><h2>Void claimed.</h2><p class="modal-sub">Your run ended in the dark, but every shard makes the next launch stronger.</p><div class="result-stats"><div><small>SURVIVAL</small><strong id="result-time">00:00</strong></div><div><small>ENEMIES</small><strong id="result-kills">0</strong></div><div><small>SHARDS</small><strong id="result-shards">0</strong></div></div><button id="again-btn" class="primary-btn"><span>Launch again</span><b>↗</b></button></div></div>
+    <div id="victory-modal" class="modal hidden"><div class="modal-inner result-inner victory-inner"><div class="result-kicker victory-kicker">SECTOR CLEARED</div><h2>One hundred waves.</h2><p class="modal-sub">You broke the swarm. Your run can end here, begin again, or continue beyond the known void.</p><div class="result-stats"><div><small>SURVIVAL</small><strong id="victory-time">00:00</strong></div><div><small>ENEMIES</small><strong id="victory-kills">0</strong></div><div><small>SHARDS</small><strong id="victory-shards">0</strong></div></div><div class="victory-actions"><button id="finish-btn" class="text-btn">Finish run</button><button id="restart-btn" class="primary-btn"><span>Restart run</span><b>↗</b></button><button id="endless-btn" class="primary-btn endless-btn"><span>Continue endless</span><b>∞</b></button></div></div></div>
+    <div id="leaderboard-modal" class="modal hidden"><div class="modal-inner leaderboard-inner"><div class="modal-heading"><div><div class="eyebrow"><span class="live-dot"></span> FLIGHT RECORDS</div><h2>Top five</h2></div><button id="close-leaderboard" class="icon-btn" aria-label="Close leaderboard">×</button></div><p class="modal-sub">Best runs stored on this device.</p><div id="leaderboard-list" class="leaderboard-list"></div><button id="clear-leaderboard" class="text-btn">Clear records</button></div></div>
+    <div id="name-modal" class="modal hidden"><div class="modal-inner name-inner"><div class="eyebrow"><span class="live-dot"></span> NEW FLIGHT RECORD</div><h2>Identify pilot.</h2><p class="modal-sub">Your run made the top five. Enter a name for the records.</p><form id="name-form"><input id="pilot-name" maxlength="16" autocomplete="nickname" placeholder="PILOT" aria-label="Pilot name"><button class="primary-btn" type="submit"><span>Save record</span><b>✓</b></button></form></div></div>
+    <div id="ship-select-modal" class="modal hidden"><div class="modal-inner ship-select-inner"><div class="modal-heading"><div><div class="eyebrow"><span class="live-dot"></span> HANGAR DECK</div><h2>Choose ship</h2></div><button id="close-ship-select" class="icon-btn" aria-label="Close ship selection">×</button></div><p class="modal-sub">Every frame launches with a different weapon.</p><div class="ship-select" id="ship-select"></div></div></div>
+    <div id="settings-modal" class="modal hidden"><div class="modal-inner settings-inner"><div class="modal-heading"><div><div class="eyebrow"><span class="live-dot"></span> SYSTEM SETTINGS</div><h2>Audio</h2></div><button id="close-settings" class="icon-btn" aria-label="Close settings">×</button></div><label class="setting-row"><span><strong>Master volume</strong><small>Adjust weapon and event sounds</small></span><input id="volume-slider" type="range" min="0" max="100" value="70"><output id="volume-value">70%</output></label><label class="setting-row mute-row"><span><strong>Mute audio</strong><small>Silence all game sounds</small></span><input id="mute-toggle" type="checkbox"><span class="toggle-track"><i></i></span></label></div></div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
